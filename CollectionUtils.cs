@@ -14,6 +14,14 @@ namespace Tomi.Utils
 
             foreach (T item in enumerable) action(item);
         }
+        
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T, int> action, int startIndex = 0)
+        {
+            if (action == null) return;
+            
+            int i = startIndex;
+            foreach (T item in enumerable) action(item, i++);
+        }
 
     }
 
