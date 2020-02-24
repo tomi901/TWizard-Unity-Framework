@@ -13,20 +13,21 @@ namespace Interbrain.Utils
     public class LoadingScreenManager : MonoBehaviour
     {
         private static LoadingScreenManager instance = null;
+        public static bool IsLoading => instance != null;
 
         private static AsyncOperation operation;
         public static float Progress => operation?.progress ?? 0f;
 
 
-        private static readonly List<GameObject> tempRootObjects = new List<GameObject>();
-        private static readonly Dictionary<GameObject, bool> objectActivations = new Dictionary<GameObject, bool>();
+        private readonly List<GameObject> tempRootObjects = new List<GameObject>();
+        private readonly Dictionary<GameObject, bool> objectActivations = new Dictionary<GameObject, bool>();
 
 
         public static Coroutine Load(string sceneToLoadName, string loadingScreenSceneName,
             IEnumerator postLoad = null,
             IEnumerator preLoad = null)
         {
-            if (instance != null)
+            if (IsLoading)
                 throw new InvalidOperationException("Already loading a scene!");
 
             instance = new GameObject("Loading Manager").AddComponent<LoadingScreenManager>();
@@ -48,14 +49,14 @@ namespace Interbrain.Utils
                 Scene loadedScene = SceneManager.GetSceneByName(sceneToLoadName);
 
                 // Deactivate all the objects of that scene for the post-load
-                tempRootObjects.Clear();
-                loadedScene.GetRootGameObjects(tempRootObjects);
+                instance.tempRootObjects.Clear();
+                loadedScene.GetRootGameObjects(instance.tempRootObjects);
 
-                objectActivations.Clear();
-                foreach (GameObject obj in tempRootObjects) // Cache activation values
-                    objectActivations.Add(obj, obj.activeSelf);
+                instance.objectActivations.Clear();
+                foreach (GameObject obj in instance.tempRootObjects) // Cache activation values
+                    instance.objectActivations.Add(obj, obj.activeSelf);
 
-                foreach (GameObject obj in tempRootObjects)
+                foreach (GameObject obj in instance.tempRootObjects)
                     obj.SetActive(false);
 
 
@@ -64,7 +65,7 @@ namespace Interbrain.Utils
                 // After the post-load, set the target scene as active, and unload the loading screen scene
                 SceneManager.SetActiveScene(loadedScene);
                 yield return SceneManager.UnloadSceneAsync(loadingScreenScene);
-                foreach (var activation in objectActivations) // Re-active objects with their original value
+                foreach (var activation in instance.objectActivations) // Re-active objects with their original value
                     activation.Key.SetActive(activation.Value);
 
                 // Clean the objects and references
