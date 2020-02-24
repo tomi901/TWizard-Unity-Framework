@@ -26,7 +26,8 @@ namespace Interbrain.Utils
             IEnumerator postLoad = null,
             IEnumerator preLoad = null)
         {
-            if (instance != null) throw new Exception("Already loading a scene!");
+            if (instance != null)
+                throw new InvalidOperationException("Already loading a scene!");
 
             instance = new GameObject("Loading Manager").AddComponent<LoadingScreenManager>();
             DontDestroyOnLoad(instance);
