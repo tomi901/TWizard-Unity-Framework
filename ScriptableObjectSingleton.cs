@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 
-namespace Interbrain.Utils
+namespace TWizard.Utils
 {
     /// <summary>
     /// To make an object of type <see cref="ScriptableObject"/> to be able to be loaded as a resource

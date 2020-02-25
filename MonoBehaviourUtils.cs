@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 
-namespace Tomi.Utils
+namespace TWizard.Utils
 {
     public static partial class UnityUtils
     {

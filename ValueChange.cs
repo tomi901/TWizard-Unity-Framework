@@ -1,7 +1,7 @@
-﻿using System;
+﻿
 
 
-namespace Interbrain.Utils
+namespace TWizard.Utils
 {
 	public delegate void ValueChange<T>(T previous, T current);
 	

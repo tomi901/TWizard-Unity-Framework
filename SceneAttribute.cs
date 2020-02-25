@@ -3,7 +3,7 @@
 using UnityEditor;
 #endif
 
-namespace Interbrain.Utils
+namespace TWizard.Utils
 {
     /// <summary>
     /// Allows to show a string as a <see cref="SceneAsset"/> object.

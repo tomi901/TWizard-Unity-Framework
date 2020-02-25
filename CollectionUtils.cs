@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Interbrain.Utils
+namespace TWizard.Utils
 {
     public static class CollectionUtils
     {

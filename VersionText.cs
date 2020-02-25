@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 
 
-namespace Interbrain.Utils
+namespace TWizard.Utils
 {
     public class VersionText : MonoBehaviour
     {
