@@ -1,8 +1,8 @@
 {
-	"name": "com.tomasrinaldi8.utils",
-	"displayName": "Tomi Utils",
-	"version": "0.0.1",
+	"name": "com.twizard.utils",
+	"displayName": "TWizard Utils",
+	"version": "0.0.2",
 	"unity": "2018.3",
-	"description": "Misc utils to make coding in Unity easier. ",
+	"description": "Misc utils to make coding in Unity easier.",
 	"dependencies": {}
 }
