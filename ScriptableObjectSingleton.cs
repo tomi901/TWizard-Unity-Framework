@@ -29,7 +29,7 @@ namespace TWizard.Utils
             // Try to check if we overriden the ResourceName const by doing 'new const string ResourceName',
             // if not found, throw an exception.
             return typeof(T).GetField(nameof(ResourcePath), flags)?.GetRawConstantValue() as string ??
-                throw new Exception($"No string constant with name '{nameof(ResourcePath)}' " +
+                throw new NotImplementedException($"No string constant with name '{nameof(ResourcePath)}' " +
                 $"overridden with type '{typeof(T)}'.");
         }
 
