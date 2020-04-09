@@ -1,8 +1,7 @@
 {
-	"name": "com.twizard.utils",
-	"displayName": "TWizard Utils",
-	"version": "0.0.2",
-	"unity": "2018.3",
-	"description": "Misc utils to make coding in Unity easier.",
-	"dependencies": {}
+  "name": "com.twizard.framework",
+  "displayName": "TWizard Framework",
+  "version": "0.0.3",
+  "unity": "2018.3",
+  "description": "Framework for my Unity projects.\n\nExamples:\n- ScriptableObjectSingleton to create project configuration assets"
 }
