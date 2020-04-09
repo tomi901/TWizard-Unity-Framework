@@ -1,2 +1,2 @@
 # Utils
-Misc utils for and Unity I use to make code simpler and better.
+Misc utils for Unity projects I use to make code simpler and better.

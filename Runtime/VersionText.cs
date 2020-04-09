@@ -6,6 +6,7 @@ namespace TWizard.Utils
 {
     public class VersionText : MonoBehaviour
     {
+        [System.Serializable]
         protected class SetTextEvent : UnityEvent<string> { }
 
         [SerializeField]
