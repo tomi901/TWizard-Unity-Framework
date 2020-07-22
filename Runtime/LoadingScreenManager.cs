@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-namespace TWizard.Utils
+namespace TWizard.Framework
 {
     /// <summary>
     /// Class to handle async loading with a scene as a loading screen.

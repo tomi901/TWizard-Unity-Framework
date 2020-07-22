@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 
-namespace TWizard.Utils
+namespace TWizard.Framework
 {
     public static partial class UnityUtils
     {

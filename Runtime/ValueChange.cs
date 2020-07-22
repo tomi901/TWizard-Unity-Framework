@@ -1,7 +1,7 @@
 ﻿
 
 
-namespace TWizard.Utils
+namespace TWizard.Framework
 {
 	public delegate void ValueChange<T>(T previous, T current);
 	

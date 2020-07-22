@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TWizard.Utils
+namespace TWizard.Framework
 {
     public static class CollectionUtils
     {
