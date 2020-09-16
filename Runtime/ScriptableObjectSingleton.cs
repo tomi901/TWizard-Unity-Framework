@@ -9,6 +9,7 @@ namespace TWizard.Framework
     /// synchronously or asynchronously and be stored on the property <see cref="Instance"/>.
     /// Useful for creating a config asset.
     /// <para>IMPORTANT: Add an <see cref="AssetLoadAttribute"/> subclass attribute on the inheriting class to handle the loading.</para>
+    /// For example you could use an <see cref="ResourceLoadAttribute"/> and set the path where it should be loaded.
     /// </summary>
     /// <typeparam name="T">The type of the Singleton object, should match the inheriting class.</typeparam>
     public abstract class ScriptableObjectSingleton<T> : ScriptableObject where T : ScriptableObjectSingleton<T>
