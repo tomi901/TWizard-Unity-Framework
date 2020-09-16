@@ -26,13 +26,13 @@ namespace TWizard.Framework
         /// If not overriden, it will use <see cref="Load{T}"/>
         /// </summary>
         /// <typeparam name="T">The asset type.</typeparam>
-        /// <param name="onComplete">Callback when the resource is loaded.</param>
+        /// <param name="onLoaded">Callback when the resource is loaded.</param>
         /// <param name="onError">Callback when the loading gave an error.</param>
-        public virtual void LoadAsync<T>(Action<T> onComplete, Action<Exception> onError) where T : UnityEngine.Object
+        public virtual void LoadAsync<T>(Action<T> onLoaded, Action<Exception> onError) where T : UnityEngine.Object
         {
             try
             {
-                onComplete?.Invoke(Load<T>());
+                onLoaded?.Invoke(Load<T>());
             }
             catch (Exception e)
             {

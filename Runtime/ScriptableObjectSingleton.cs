@@ -5,60 +5,65 @@ using UnityEngine;
 namespace TWizard.Framework
 {
     /// <summary>
-    /// To make an object of type <see cref="ScriptableObject"/> to be able to be loaded as a resource
-    /// and act as a resource and stored on the property <see cref="Instance"/>. <para>IMPORTANT:
-    /// To define the resource path add "new const string ResourcePath = (Resource Path);".</para>
+    /// To make an object of type <see cref="ScriptableObject"/> to be able to be loaded
+    /// synchronously or asynchronously and be stored on the property <see cref="Instance"/>
+    /// <para>IMPORTANT: Add an <see cref="AssetLoadAttribute"/> subclass to handle the loading.</para>
     /// </summary>
     /// <typeparam name="T">The type of the Singleton object.</typeparam>
     public abstract class ScriptableObjectSingleton<T> : ScriptableObject where T : ScriptableObjectSingleton<T>
     {
-        /// <summary>
-        /// The constant 
-        /// </summary>
-        protected const string ResourcePath = null;
-
         private static T instance;
+        /// <summary>
+        /// Gets the instance, if not loaded it will call the <see cref="Load"/>
+        /// </summary>
         public static T Instance => Load();
+        /// <summary>
+        /// If the <see cref="Instance"/> is already loaded.
+        /// </summary>
+        public static bool IsLoaded => instance != null;
 
-        public static bool Loaded => instance != null;
 
-
-        private static string GetResourceName()
+        private static AssetLoadAttribute GetLoader()
         {
-            const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-            // Try to check if we overriden the ResourceName const by doing 'new const string ResourceName',
-            // if not found, throw an exception.
-            return typeof(T).GetField(nameof(ResourcePath), flags)?.GetRawConstantValue() as string ??
-                throw new NotImplementedException($"No string constant with name '{nameof(ResourcePath)}' " +
-                $"overridden with type '{typeof(T)}'.");
+            var loader = typeof(T).GetCustomAttribute<AssetLoadAttribute>();
+            if (loader == null)
+                throw new Exception($"No {nameof(AssetLoadAttribute)} assigned, add a subclass attribute on the class.");
+
+            return loader;
         }
 
         public static T Load()
         {
-            if (!Loaded)
+            if (!IsLoaded)
             {
-                string name = GetResourceName();
-                Debug.Log($"Loading synchronously resource '{name}'...");
-                instance = Resources.Load<T>(name);
-
-                if (!Loaded)
-                    throw new Exception($"No resource with name '{name}' of type '{typeof(T)}' found.");
+                var loader = GetLoader();
+                Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
+                instance = loader.Load<T>();
             }
 
             return instance;
         }
 
-        public static ResourceRequest LoadAsync()
+        public static void LoadAsync(Action<T> onLoaded = null, Action<Exception> onError = null)
         {
-            if (Loaded) return null;
+            // Already has an instance, return and call onLoaded
+            if (IsLoaded)
+            {
+                onLoaded?.Invoke(instance);
+                return;
+            }
 
-            string name = GetResourceName();
-            Debug.Log($"Loading asynchronously resource '{name}'...");
-            ResourceRequest request = Resources.LoadAsync<T>(name);
-
-            // When the loading is complete, assign the instance.
-            request.completed += (op => instance = (T)request.asset);
-            return request;
+            var loader = GetLoader();
+            Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
+            loader.LoadAsync<T>((asset) =>
+            {
+                instance = asset;
+                onLoaded?.Invoke(asset);
+            }, (e) =>
+            {
+                Debug.LogException(e);
+                onError?.Invoke(e);
+            });
         }
     }
 }

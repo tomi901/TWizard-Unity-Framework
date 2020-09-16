@@ -16,12 +16,12 @@ namespace TWizard.Framework
 
         public override T Load<T>() => Resources.Load<T>(Path);
 
-        public override void LoadAsync<T>(Action<T> onComplete, Action<Exception> onError)
+        public override void LoadAsync<T>(Action<T> onLoaded, Action<Exception> onError)
         {
             var request = Resources.LoadAsync<T>(Path);
             request.completed += (_) =>
             {
-                onComplete?.Invoke((T)request.asset);
+                onLoaded?.Invoke((T)request.asset);
             };
         }
     }
