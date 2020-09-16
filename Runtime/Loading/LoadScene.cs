@@ -10,7 +10,7 @@ namespace TWizard.Framework
     /// <summary>
     /// Util static class to allow the await of unity async operations.
     /// </summary>
-    public static class Load
+    public static partial class Load
     {
         #region AsyncOperation await
         public struct AsyncOperationAwaiter : INotifyCompletion
