@@ -21,7 +21,11 @@ namespace TWizard.Framework
             var request = Resources.LoadAsync<T>(Path);
             request.completed += (_) =>
             {
-                onLoaded?.Invoke((T)request.asset);
+                T asset = (T)request.asset;
+                if (!!asset)
+                    onLoaded?.Invoke((T)request.asset);
+                else
+                    onError?.Invoke(new Exception($"Couldn't load asset in path: {Path}"));
             };
         }
     }
