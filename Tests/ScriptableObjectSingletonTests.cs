@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace TWizard.Framework.Tests
+namespace TWizard.Core.Tests
 {
     public class ScriptableObjectSingletonTests
     {
