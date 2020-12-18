@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 
 
-namespace TWizard.Framework
+namespace TWizard.Core
 {
     public class VersionText : MonoBehaviour
     {
@@ -11,6 +11,7 @@ namespace TWizard.Framework
 
         [SerializeField]
         private string format = "v. {0}";
+        public string Text => Get(format);
 
         [SerializeField]
         private SetTextEvent setText = default;
@@ -22,7 +23,10 @@ namespace TWizard.Framework
 
         private void Start()
         {
-            setText.Invoke(string.Format(format, Application.version));
+            setText.Invoke(Text);
         }
+
+
+        public string Get(string format) => string.Format(format, Application.version);
     }
 }
