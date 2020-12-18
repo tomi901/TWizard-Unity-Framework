@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 
-namespace TWizard.Framework
+namespace TWizard.Core
 {
     public static partial class UnityUtils
     {
@@ -27,7 +27,8 @@ namespace TWizard.Framework
 
             IEnumerator Routine()
             {
-                if (action == null) yield break;
+                if (action == null)
+                    yield break;
 
                 yield return new WaitForSeconds(time);
 

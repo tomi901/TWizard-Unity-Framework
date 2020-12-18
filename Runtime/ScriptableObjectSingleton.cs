@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 
-namespace TWizard.Framework
+namespace TWizard.Core
 {
     /// <summary>
     /// To make an object of type <see cref="ScriptableObject"/> to be able to be loaded

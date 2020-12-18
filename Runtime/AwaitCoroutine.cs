@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-namespace TWizard.Framework
+namespace TWizard.Core
 {
     [HideInInspector]
     public class AwaitCoroutine : MonoBehaviour
@@ -35,7 +35,7 @@ namespace TWizard.Framework
             return Main.Execute(routine, cancellationToken);
         }
 
-        public async Task Execute(IEnumerator routine, CancellationToken cancellationToken = default)
+        public Task Execute(IEnumerator routine, CancellationToken cancellationToken = default)
         {
             using (var signal = new SemaphoreSlim(0, 1))
             {
@@ -45,7 +45,7 @@ namespace TWizard.Framework
                     // Debug.Log("Cancel", this);
                     StopCoroutine(coroutine);
                 });
-                await signal.WaitAsync(cancellationToken);
+                return signal.WaitAsync(cancellationToken);
 
                 IEnumerator NotifiedRoutine()
                 {
