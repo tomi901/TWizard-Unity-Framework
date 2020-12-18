@@ -1,7 +1,7 @@
 {
-  "name": "com.twizard.framework",
-  "displayName": "TWizard Framework",
-  "version": "0.1.0",
+  "name": "com.twizard.core",
+  "displayName": "TWizard Core",
+  "version": "0.2.0",
   "unity": "2018.3",
-  "description": "Framework for my Unity projects.\n\nExamples:\n- ScriptableObjectSingleton to create project configuration assets"
+  "description": "Framework for my Unity projects."
 }
