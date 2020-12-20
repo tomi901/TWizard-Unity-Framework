@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-namespace TWizard.Core
+namespace TWizard.Core.Loading
 {
     /// <summary>
     /// Util static class to allow the await of unity async operations.

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace TWizard.Core
+namespace TWizard.Core.Loading
 {
     /// <summary>
     /// An attribute to tell how this asset class should be loaded.
