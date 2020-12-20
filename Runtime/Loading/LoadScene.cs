@@ -1,9 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
+
+using TWizard.Core.Async;
 
 namespace TWizard.Core.Loading
 {
@@ -12,44 +12,16 @@ namespace TWizard.Core.Loading
     /// </summary>
     public static partial class Load
     {
-        #region AsyncOperation await
-        public struct AsyncOperationAwaiter : INotifyCompletion
-        {
-            public AsyncOperation operation;
-
-            public bool IsCompleted => operation.isDone;
-
-            public AsyncOperationAwaiter(AsyncOperation operation)
-            {
-                this.operation = operation;
-            }
-
-            public void OnCompleted(Action continuation)
-            {
-                operation.completed += (op) => continuation();
-            }
-
-            public AsyncOperation GetResult() => operation;
-        }
-
-        public static AsyncOperationAwaiter GetAwaiter(this AsyncOperation operation) => new AsyncOperationAwaiter(operation);
-        #endregion
+        public delegate Task TaskOperation();
 
 
         private static Scene lastLoadedScene;
 
         static Load()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneLoaded += (scene, _) => lastLoadedScene = scene;
         }
 
-        private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            lastLoadedScene = scene;
-        }
-
-
-        public delegate Task TaskOperation();
 
         public static async Task<Scene> Scene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single,
             TaskOperation postLoad = null)
