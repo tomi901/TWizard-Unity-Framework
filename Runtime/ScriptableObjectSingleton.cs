@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using UnityEngine;
 
 using TWizard.Core.Loading;
@@ -30,7 +29,7 @@ namespace TWizard.Core
 
         private static AssetLoadAttribute GetLoader()
         {
-            var loader = typeof(T).GetCustomAttribute<AssetLoadAttribute>();
+            var loader = typeof(T).GetLoader();
             if (loader == null)
                 throw new Exception($"No {nameof(AssetLoadAttribute)} assigned, add a subclass attribute on the class.");
 

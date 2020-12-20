@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Reflection;
 
 
 namespace TWizard.Core.Loading
 {
+    public static class AssetLoadExtensions
+    {
+        public static AssetLoadAttribute GetLoader(this Type type) => type.GetCustomAttribute<AssetLoadAttribute>();
+    }
+
     /// <summary>
     /// An attribute to tell how this asset class should be loaded.
     /// </summary>
