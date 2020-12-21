@@ -35,7 +35,7 @@ Loads a scene asynchronously as a *Task<Scene>* returning the loaded *Scene*, al
 In your Unity project inside the *Packages* folder modify your manifest.json and a line in the *dependencies* field:
 
 ```json
-"com.twizard.framework": "https://github.com/tomi901/TWizard-Unity-Framework.git"
+"com.twizard.core": "https://github.com/tomi901/TWizard-Unity-Framework.git"
 ```
 
 (TODO: Use a scopedRegistry)
