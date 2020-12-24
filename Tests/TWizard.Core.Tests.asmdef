@@ -3,7 +3,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "TWizard.Framework"
+        "TWizard.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
