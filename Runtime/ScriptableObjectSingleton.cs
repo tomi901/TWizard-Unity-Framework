@@ -20,7 +20,11 @@ namespace TWizard.Core
         /// <summary>
         /// Gets the instance, if not loaded it will call the <see cref="Load"/>
         /// </summary>
-        public static T Instance => Load();
+        public static T Instance
+        {
+            get => Load();
+            protected set => instance = value;
+        }
         /// <summary>
         /// If the <see cref="Instance"/> is already loaded.
         /// </summary>
