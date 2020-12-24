@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using TWizard.Core.Async;
+using System;
 
 namespace TWizard.Core.Loading
 {
@@ -15,19 +16,19 @@ namespace TWizard.Core.Loading
         public delegate Task TaskOperation();
 
 
-        private static Scene lastLoadedScene;
-
-        static Load()
-        {
-            SceneManager.sceneLoaded += (scene, _) => lastLoadedScene = scene;
-        }
-
-
         public static async Task<Scene> Scene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single,
             TaskOperation postLoad = null)
         {
-            await SceneManager.LoadSceneAsync(sceneName, mode);
-            Scene loadedScene = lastLoadedScene;
+            Scene loadedScene = default;
+            try
+            {
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                await SceneManager.LoadSceneAsync(sceneName, mode);
+            }
+            finally
+            {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+            }
 
             if (postLoad != null)
             {
@@ -48,6 +49,15 @@ namespace TWizard.Core.Loading
                     obj.SetActive(true);
             }
             return loadedScene;
+
+            void OnSceneLoaded(Scene s, LoadSceneMode m)
+            {
+                if (m == mode && s.name == sceneName)
+                {
+                    loadedScene = s;
+                    SceneManager.sceneLoaded -= OnSceneLoaded;
+                }
+            }
         }
     }
 }
