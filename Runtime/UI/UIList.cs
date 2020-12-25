@@ -11,17 +11,23 @@ namespace TWizard.Core.UI
         T Data { get; set; }
     }
 
-    public abstract class UIList<TItem, TData> : UIBehaviour, IReadOnlyList<TItem>
+    [System.Serializable] // Generic classes will be serializable in 2020.1 2020.2
+    public class UIList<TItem, TData> : IReadOnlyList<TItem>
         where TItem : MonoBehaviour, IItem<TData>
     {
         public struct DataList : IReadOnlyList<TData>
         {
             private readonly UIList<TItem, TData> list;
+            private List<TItem> Items => list.items;
 
             internal DataList(UIList<TItem, TData> list) => this.list = list;
 
             public int Count => list.Count;
-            public TData this[int index] => list.items[index].Data;
+            public TData this[int index]
+            {
+                get => Items[index].Data;
+                set => Items[index].Data = value;
+            }
 
             public IEnumerator<TData> GetEnumerator()
             {
@@ -38,41 +44,64 @@ namespace TWizard.Core.UI
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
-        [SerializeField]
-        private Transform container;
 
         [SerializeField]
         private TItem itemPrefab;
 
         private readonly List<TItem> items = new List<TItem>();
-        
 
+        private readonly Transform container;
+
+        /// <summary>
+        /// How many items were given when <see cref="Populate(IEnumerable{TData})"/> was called.
+        /// </summary>
         public int Count { get; private set; }
         public TItem this[int index] => (index < Count) ? items[index] : throw new System.ArgumentOutOfRangeException(nameof(index));
 
+        /// <summary>
+        /// Wrapper list to access the data directly.
+        /// </summary>
         public DataList Data => new DataList(this);
 
 
-
-        protected override void Start()
+        /// <summary>
+        /// Creates a <see cref="UIList{TItem, TData}"/> with a given transform container, the container has to have at least 1 child <see cref="TItem"/>.
+        /// </summary>
+        /// <param name="container">The parent container for the items, has to have at least 1 child <see cref="TItem"/>.</param>
+        public UIList(Transform container)
         {
-            base.Start();
-
-            // Try to get the already spawned items
+            this.container = !!container ? container : throw new System.ArgumentNullException(nameof(container));
             container.GetComponentsInChildren(true, items);
-            if (items.Count <= 0)
-                AddItem();
+
+            if (items.Count > 0)
+                itemPrefab = items[0];
+            else
+                throw new System.ArgumentException($"Transform container \"{container}\" has to contain at least 1 child item of type \"{nameof(TItem)}\" to use this constructor.",
+                    nameof(container));
         }
 
-        protected override void Reset()
+        /// <summary>
+        /// Creates a <see cref="UIList{TItem, TData}"/> with the selected prefab.
+        /// </summary>
+        /// <param name="container">The parent container for the items.</param>
+        /// <param name="itemPrefab">The prefab.</param>
+        public UIList(Transform container, TItem itemPrefab)
         {
-            base.Reset();
-            container = transform;
+            this.itemPrefab = !!itemPrefab ? itemPrefab : throw new System.ArgumentNullException(nameof(container));
+            this.container = !!container ? container : throw new System.ArgumentNullException(nameof(container));
+            container.GetComponentsInChildren(true, items);
         }
 
 
+        /// <summary>
+        /// Populates the list with the items of the given data collection, if null everything will be hidden.
+        /// </summary>
+        /// <param name="data">The data list, collection or enumerable with the <see cref="TData"/> for each item.</param>
         public void Populate(IEnumerable<TData> data)
         {
+            if (data == null)
+                data = System.Linq.Enumerable.Empty<TData>();
+
             int i = 0;
             foreach (TData d in data)
             {
@@ -98,7 +127,7 @@ namespace TWizard.Core.UI
         /// <returns>The new item.</returns>
         private TItem AddItem()
         {
-            var newItem = Instantiate(items[0], container);
+            var newItem = Object.Instantiate(itemPrefab, container);
             items.Add(newItem);
             return newItem;
         }
