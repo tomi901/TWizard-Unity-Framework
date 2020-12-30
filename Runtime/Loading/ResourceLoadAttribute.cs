@@ -16,16 +16,16 @@ namespace TWizard.Core.Loading
 
         public override T Load<T>() => Resources.Load<T>(Path);
 
-        public override void LoadAsync<T>(Action<T> onLoaded, Action<Exception> onError)
+        public override void LoadAsync<T>(Action<Result<T>> callback)
         {
             var request = Resources.LoadAsync<T>(Path);
             request.completed += (_) =>
             {
                 T asset = (T)request.asset;
                 if (!!asset)
-                    onLoaded?.Invoke((T)request.asset);
+                    callback.SetResult(asset);
                 else
-                    onError?.Invoke(new Exception($"Couldn't load asset in path: {Path}"));
+                    callback.SetException(new Exception($"Couldn't load asset in path: {Path}"));
             };
         }
     }

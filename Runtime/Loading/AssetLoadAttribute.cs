@@ -34,15 +34,15 @@ namespace TWizard.Core.Loading
         /// <typeparam name="T">The asset type.</typeparam>
         /// <param name="onLoaded">Callback when the resource is loaded.</param>
         /// <param name="onError">Callback when the loading gave an error.</param>
-        public virtual void LoadAsync<T>(Action<T> onLoaded, Action<Exception> onError) where T : UnityEngine.Object
+        public virtual void LoadAsync<T>(Action<Result<T>> callback) where T : UnityEngine.Object
         {
             try
             {
-                onLoaded?.Invoke(Load<T>());
+                callback.SetResult(Load<T>());
             }
             catch (Exception e)
             {
-                onError?.Invoke(e);
+                callback.SetException(e);
             }
         }
     }

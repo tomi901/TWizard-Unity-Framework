@@ -48,29 +48,31 @@ namespace TWizard.Core
                 Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
                 instance = loader.Load<T>();
             }
-
             return instance;
         }
 
-        public static void LoadAsync(Action<T> onLoaded = null, Action<Exception> onError = null)
+        public static void LoadAsync(Action<Result<T>> callback = null)
         {
             // Already has an instance, return and call onLoaded
             if (IsLoaded)
             {
-                onLoaded?.Invoke(instance);
+                callback?.SetResult(instance);
                 return;
             }
 
             var loader = GetLoader();
             Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
-            loader.LoadAsync<T>((asset) =>
+            loader.LoadAsync<T>((result) =>
             {
-                instance = asset;
-                onLoaded?.Invoke(asset);
-            }, (e) =>
-            {
-                Debug.LogException(e);
-                onError?.Invoke(e);
+                if (result.IsSuccesful)
+                {
+                    instance = result.Value;
+                    callback?.SetResult(instance);
+                }
+                else
+                {
+                    callback?.SetException(result.Exception);
+                }
             });
         }
     }

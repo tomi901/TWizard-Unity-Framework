@@ -24,7 +24,12 @@ namespace TWizard.Core.Tests
         public IEnumerator LoadAsynchronously()
         {
             SingletonTest loaded = null;
-            SingletonTest.LoadAsync((asset) => loaded = asset, (e) => Debug.LogException(e));
+            SingletonTest.LoadAsync((result) => {
+                if (result.IsSuccesful)
+                    loaded = result;
+                else
+                    Debug.LogException(result.Exception);
+            });
             yield return new WaitUntil(() => !!loaded);
 
             Assert.That(loaded, Is.Not.Null);

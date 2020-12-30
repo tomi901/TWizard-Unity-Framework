@@ -19,14 +19,14 @@ namespace TWizard.Core.Loading
             return operation.Result;
         }
 
-        public override void LoadAsync<T>(Action<T> onLoaded, Action<Exception> onError)
+        public override void LoadAsync<T>(Action<Result<T>> callback)
         {
             Addressables.LoadAssetAsync<T>(Key).Completed += (op) =>
             {
                 if (op.OperationException != null)
-                    onError(op.OperationException);
+                    callback.SetException(op.OperationException);
                 else
-                    onLoaded(op.Result);
+                    callback.SetResult(op.Result);
             };
         }
     }

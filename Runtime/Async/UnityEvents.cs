@@ -68,5 +68,19 @@ namespace TWizard.Core.Async
             }
             return task.Task;
         }
+
+
+        public void WaitAsCoroutine(object obj, System.Action onFinish)
+        {
+            if (onFinish == null)
+                throw new System.ArgumentNullException(nameof(onFinish));
+
+            StartCoroutine(Routine());
+            System.Collections.IEnumerator Routine()
+            {
+                yield return obj;
+                onFinish();
+            }
+        }
     }
 }
