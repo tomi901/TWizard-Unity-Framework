@@ -6,6 +6,10 @@ using TWizard.Core.Loading;
 
 namespace TWizard.Core
 {
+    public abstract class ScriptableObjectSingleton : ScriptableObject
+    {
+    }
+
     /// <summary>
     /// To make an object of type <see cref="ScriptableObject"/> to be able to be loaded
     /// synchronously or asynchronously and be stored on the property <see cref="Instance"/>.
@@ -14,7 +18,7 @@ namespace TWizard.Core
     /// For example you could use an <see cref="ResourceLoadAttribute"/> and set the path where it should be loaded.
     /// </summary>
     /// <typeparam name="T">The type of the Singleton object, should match the inheriting class.</typeparam>
-    public abstract class ScriptableObjectSingleton<T> : ScriptableObject where T : ScriptableObjectSingleton<T>
+    public abstract class ScriptableObjectSingleton<T> : ScriptableObjectSingleton where T : ScriptableObjectSingleton<T>
     {
         private static T instance;
         /// <summary>

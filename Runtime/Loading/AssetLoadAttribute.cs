@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using UnityEngine;
 
 
 namespace TWizard.Core.Loading
@@ -15,9 +16,13 @@ namespace TWizard.Core.Loading
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public abstract class AssetLoadAttribute : Attribute
     {
+        protected internal virtual string CreateAssetOnPath => $"{Application.dataPath}/UnnamedAsset.asset";
+
+
         public AssetLoadAttribute()
         {
         }
+
 
         /// <summary>
         /// Load synchronously the asset.
@@ -27,8 +32,8 @@ namespace TWizard.Core.Loading
         public abstract T Load<T>() where T : UnityEngine.Object;
 
         /// <summary>
-        /// Loads asynchronously the asset in a generic way to work with loaders like <see cref="UnityEngine.Resources.LoadAsync(string)"/>
-        /// or <see cref="UnityEngine.AssetBundle.LoadAssetAsync(string)"/>.
+        /// Loads asynchronously the asset in a generic way to work with loaders like <see cref="Resources.LoadAsync(string)"/>
+        /// or <see cref="AssetBundle.LoadAssetAsync(string)"/>.
         /// If not overriden, it will use <see cref="Load{T}"/>
         /// </summary>
         /// <typeparam name="T">The asset type.</typeparam>
