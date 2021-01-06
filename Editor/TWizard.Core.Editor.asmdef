@@ -1,0 +1,16 @@
+{
+    "name": "TWizard.Core.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b6a4e3bd18d98cc4db4f21401e87b735"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
