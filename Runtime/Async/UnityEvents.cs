@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -52,19 +53,26 @@ namespace TWizard.Core.Async
 
 
 
-        public Task AwaitAsCoroutine(System.Collections.IEnumerator enumerator) => AwaitAsCoroutine(enumerator);
-
-        public Task AwaitAsCoroutine(YieldInstruction instruction) => AwaitAsCoroutine(instruction);
-
-        public Task AwaitAsCoroutine(object obj)
+        public Task<object> AwaitAsCoroutine(IEnumerator enumerator)
         {
-            var task = new TaskCompletionSource<bool>();
-
+            var task = new TaskCompletionSource<object>();
             StartCoroutine(Routine());
-            System.Collections.IEnumerator Routine()
+            IEnumerator Routine()
             {
-                yield return obj;
-                task.SetResult(true);
+                yield return enumerator;
+                task.SetResult(enumerator.Current);
+            }
+            return task.Task;
+        }
+
+        public Task<T> AwaitAsCoroutine<T>(T instruction) where T : YieldInstruction
+        {
+            var task = new TaskCompletionSource<T>();
+            StartCoroutine(Routine());
+            IEnumerator Routine()
+            {
+                yield return instruction;
+                task.SetResult(instruction);
             }
             return task.Task;
         }
@@ -76,7 +84,7 @@ namespace TWizard.Core.Async
                 throw new System.ArgumentNullException(nameof(onFinish));
 
             StartCoroutine(Routine());
-            System.Collections.IEnumerator Routine()
+            IEnumerator Routine()
             {
                 yield return obj;
                 onFinish();
