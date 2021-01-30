@@ -52,7 +52,7 @@ namespace TWizard.Core
             if (!IsLoaded)
             {
                 var loader = GetLoader();
-                Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
+                // Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
                 instance = loader.Load<T>();
             }
             return instance;
@@ -68,7 +68,7 @@ namespace TWizard.Core
             }
 
             var loader = GetLoader();
-            Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
+            // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
             loader.LoadAsync<T>((result) =>
             {
                 if (result.IsSuccesful)
@@ -91,7 +91,7 @@ namespace TWizard.Core
 
             var task = new UniTaskCompletionSource<T>();
             var loader = GetLoader();
-            Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
+            // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
             loader.LoadAsync<T>((result) =>
             {
                 if (result.IsSuccesful)
