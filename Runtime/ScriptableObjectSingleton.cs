@@ -1,5 +1,8 @@
 ﻿using System;
 using UnityEngine;
+#if UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 using TWizard.Core.Loading;
 
@@ -79,5 +82,30 @@ namespace TWizard.Core
                 }
             });
         }
+
+#if UNITASK
+        public static UniTask<T> LoadAsync()
+        {
+            if (IsLoaded)
+                return UniTask.FromResult(instance);
+
+            var task = new UniTaskCompletionSource<T>();
+            var loader = GetLoader();
+            Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
+            loader.LoadAsync<T>((result) =>
+            {
+                if (result.IsSuccesful)
+                {
+                    instance = result.Value;
+                    task.TrySetResult(instance);
+                }
+                else
+                {
+                    task.TrySetException(result.Exception);
+                }
+            });
+            return task.Task;
+        }
+#endif
     }
 }
