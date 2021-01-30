@@ -3,6 +3,8 @@
 
 namespace TWizard.Core
 {
+    public delegate void ResultCallback<T>(Result<T> result);
+
     public struct Result<T>
     {
         private readonly T value;
@@ -32,7 +34,7 @@ namespace TWizard.Core
 
     public static class ResultExtensions
     {
-        public static void SetResult<T>(this Action<Result<T>> resultCallback, T value) => resultCallback(new Result<T>(value));
-        public static void SetException<T>(this Action<Result<T>> resultCallback, Exception exception) => resultCallback(new Result<T>(exception));
+        public static void SetResult<T>(this ResultCallback<T> resultCallback, T value) => resultCallback(new Result<T>(value));
+        public static void SetException<T>(this ResultCallback<T> resultCallback, Exception exception) => resultCallback(new Result<T>(exception));
     }
 }

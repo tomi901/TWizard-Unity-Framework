@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
-using TWizard.Core.Async;
-using System;
 
 namespace TWizard.Core.Loading
 {
@@ -13,42 +13,54 @@ namespace TWizard.Core.Loading
     /// </summary>
     public static partial class Load
     {
-        public delegate Task TaskOperation();
-
-
-        public static async Task<Scene> Scene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single,
-            TaskOperation postLoad = null)
+#if UNITASK
+        public static async UniTask<Scene> Scene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single,
+            IProgress<float> progress = null, PlayerLoopTiming playerLoopTiming = PlayerLoopTiming.Update)
         {
             Scene loadedScene = default;
             try
             {
                 SceneManager.sceneLoaded += OnSceneLoaded;
-                await SceneManager.LoadSceneAsync(sceneName, mode);
+                await SceneManager.LoadSceneAsync(sceneName, mode).ToUniTask(progress, playerLoopTiming);
+                return loadedScene;
             }
-            finally
+            catch
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
+                throw;
             }
 
-            if (postLoad != null)
+            void OnSceneLoaded(Scene s, LoadSceneMode m)
             {
-                // Deactivate the objects to allow post load
-                var sceneObjects = new List<GameObject>();
-                loadedScene.GetRootGameObjects(sceneObjects);
-                sceneObjects.RemoveAll(go => !go.activeSelf);
-
-                foreach (GameObject obj in sceneObjects)
-                    obj.SetActive(false);
-
-                // Do all the post-load operations while awaiting them
-                foreach (TaskOperation operation in postLoad.GetInvocationList())
-                    await operation();
-
-                // Activate the root objects that were deactivated
-                foreach (GameObject obj in sceneObjects)
-                    obj.SetActive(true);
+                if (m == mode && s.name == sceneName)
+                {
+                    loadedScene = s;
+                    SceneManager.sceneLoaded -= OnSceneLoaded;
+                }
             }
-            return loadedScene;
+        }
+#endif
+
+        public static AsyncOperation Scene(string sceneName, ResultCallback<Scene> onLoad, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            Scene loadedScene = default;
+            try
+            {
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                var operation = SceneManager.LoadSceneAsync(sceneName, mode);
+                operation.completed += AfterLoad;
+                return operation;
+            }
+            catch 
+            {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+                throw;
+            }
+
+            void AfterLoad(AsyncOperation _)
+            {
+                onLoad.SetResult(loadedScene);
+            }
 
             void OnSceneLoaded(Scene s, LoadSceneMode m)
             {

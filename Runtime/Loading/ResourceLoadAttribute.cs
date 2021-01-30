@@ -17,7 +17,7 @@ namespace TWizard.Core.Loading
 
         public override T Load<T>() => Resources.Load<T>(Path);
 
-        public override void LoadAsync<T>(Action<Result<T>> callback)
+        public override void LoadAsync<T>(ResultCallback<T> callback)
         {
             var request = Resources.LoadAsync<T>(Path);
             request.completed += (_) =>

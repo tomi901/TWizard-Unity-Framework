@@ -55,7 +55,7 @@ namespace TWizard.Core
             return instance;
         }
 
-        public static void LoadAsync(Action<Result<T>> callback = null)
+        public static void LoadAsync(ResultCallback<T> callback = null)
         {
             // Already has an instance, return and call onLoaded
             if (IsLoaded)
