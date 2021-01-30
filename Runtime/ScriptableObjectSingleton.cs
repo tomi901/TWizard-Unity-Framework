@@ -27,15 +27,15 @@ namespace TWizard.Core
         /// <summary>
         /// Gets the instance, if not loaded it will call the <see cref="Load"/>
         /// </summary>
-        protected static T Instance
+        public static T Instance
         {
             get => Load();
-            set => instance = value;
+            protected set => instance = value;
         }
         /// <summary>
         /// If the <see cref="Instance"/> is already loaded.
         /// </summary>
-        protected static bool IsLoaded => instance != null;
+        public static bool IsLoaded => instance != null;
 
 
         private static AssetLoadAttribute GetLoader()
@@ -47,7 +47,7 @@ namespace TWizard.Core
             return loader;
         }
 
-        protected static T Load()
+        public static T Load()
         {
             if (!IsLoaded)
             {
@@ -58,7 +58,7 @@ namespace TWizard.Core
             return instance;
         }
 
-        protected static void LoadAsync(ResultCallback<T> callback = null)
+        public static void LoadAsync(ResultCallback<T> callback = null)
         {
             // Already has an instance, return and call onLoaded
             if (IsLoaded)
@@ -84,7 +84,7 @@ namespace TWizard.Core
         }
 
 #if UNITASK
-        protected static UniTask<T> LoadAsync()
+        public static UniTask<T> LoadAsync()
         {
             if (IsLoaded)
                 return UniTask.FromResult(instance);
