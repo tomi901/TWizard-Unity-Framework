@@ -9,7 +9,7 @@ namespace TWizard.Core.Loading
     public class ResourceLoadAttribute : AssetLoadAttribute
     {
         public string Path { get; }
-        protected internal override string CreateAssetOnPath => $"{Application.dataPath}/Resources/{Path}";
+
 
         public ResourceLoadAttribute()
         {

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+#if UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 
 namespace TWizard.Core.Loading
@@ -16,9 +19,6 @@ namespace TWizard.Core.Loading
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public abstract class AssetLoadAttribute : Attribute
     {
-        protected internal virtual string CreateAssetOnPath => $"{Application.dataPath}/UnnamedAsset.asset";
-
-
         public AssetLoadAttribute()
         {
         }
@@ -50,5 +50,20 @@ namespace TWizard.Core.Loading
                 callback.SetException(e);
             }
         }
+
+#if UNITASK
+        public UniTask<T> LoadAsync<T>() where T : UnityEngine.Object
+        {
+            var tcs = new UniTaskCompletionSource<T>();
+            LoadAsync<T>((result) =>
+            {
+                if (result.IsSuccesful)
+                    tcs.TrySetResult(result);
+                else
+                    tcs.TrySetException(result.Exception);
+            });
+            return tcs.Task;
+        }
+#endif
     }
 }

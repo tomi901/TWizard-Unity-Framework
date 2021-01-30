@@ -89,22 +89,9 @@ namespace TWizard.Core
             if (IsLoaded)
                 return UniTask.FromResult(instance);
 
-            var task = new UniTaskCompletionSource<T>();
             var loader = GetLoader();
             // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
-            loader.LoadAsync<T>((result) =>
-            {
-                if (result.IsSuccesful)
-                {
-                    instance = result.Value;
-                    task.TrySetResult(instance);
-                }
-                else
-                {
-                    task.TrySetException(result.Exception);
-                }
-            });
-            return task.Task;
+            return loader.LoadAsync<T>();
         }
 #endif
     }
