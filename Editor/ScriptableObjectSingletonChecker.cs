@@ -60,6 +60,7 @@ namespace TWizard.Core.Editor
 
         public static void CreateAsset(Type type)
         {
+            /*
             var loader = type.GetLoader();
             string path = loader.CreateAssetOnPath;
             if (path.EndsWith("/"))
@@ -71,6 +72,7 @@ namespace TWizard.Core.Editor
             AssetDatabase.CreateAsset(asset, path);
             EditorUtility.FocusProjectWindow();
             Selection.activeObject = asset;
+            */
         }
 
 

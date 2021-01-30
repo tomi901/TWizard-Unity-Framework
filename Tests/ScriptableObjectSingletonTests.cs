@@ -53,5 +53,9 @@ namespace TWizard.Core.Tests
     [TestLoad]
     public class SingletonTest : ScriptableObjectSingleton<SingletonTest>
     {
+        public static new SingletonTest Instance => ScriptableObjectSingleton<SingletonTest>.Instance;
+        public static new bool IsLoaded => ScriptableObjectSingleton<SingletonTest>.IsLoaded;
+        public static new SingletonTest Load() => ScriptableObjectSingleton<SingletonTest>.Load();
+        public static new void LoadAsync(ResultCallback<SingletonTest> callback) => ScriptableObjectSingleton<SingletonTest>.LoadAsync(callback);
     }
 }
