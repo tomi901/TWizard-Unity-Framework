@@ -24,7 +24,7 @@ namespace TWizard.Core.Tests
         public IEnumerator LoadAsynchronously()
         {
             SingletonTest loaded = null;
-            SingletonTest.LoadAsync((result) => {
+            SingletonTest.LoadAsync(callback: (result) => {
                 if (result.IsSuccesful)
                     loaded = result;
                 else

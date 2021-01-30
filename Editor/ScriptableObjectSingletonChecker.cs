@@ -57,7 +57,7 @@ namespace TWizard.Core.Editor
 
         public static bool HasAssetLoadAttribute(Type type) => type.GetLoader() != null;
 
-
+        /*
         public static void CreateAsset(Type type)
         {
             var loader = type.GetLoader();
@@ -72,7 +72,7 @@ namespace TWizard.Core.Editor
             EditorUtility.FocusProjectWindow();
             Selection.activeObject = asset;
         }
-
+        */
 
         public static void CanLoad(Type type)
         {
