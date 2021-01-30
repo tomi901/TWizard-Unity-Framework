@@ -58,7 +58,7 @@ namespace TWizard.Core
             return instance;
         }
 
-        public static void LoadAsync(ResultCallback<T> callback = null)
+        public static void LoadAsync(ResultCallback<T> callback = null, IProgress<Func<float>> progress = null)
         {
             // Already has an instance, return and call onLoaded
             if (IsLoaded)
@@ -80,18 +80,18 @@ namespace TWizard.Core
                 {
                     callback?.SetException(result.Exception);
                 }
-            });
+            }, progress);
         }
 
 #if UNITASK
-        public static UniTask<T> LoadAsync()
+        public static UniTask<T> LoadAsync(IProgress<Func<float>> progress = null)
         {
             if (IsLoaded)
                 return UniTask.FromResult(instance);
 
             var loader = GetLoader();
             // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
-            return loader.LoadAsync<T>();
+            return loader.LoadAsync<T>(progress);
         }
 #endif
     }

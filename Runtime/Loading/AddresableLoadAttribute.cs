@@ -1,4 +1,5 @@
 ﻿#if USING_ADDRESABLES
+using System;
 using UnityEngine.AddressableAssets;
 
 
@@ -18,9 +19,11 @@ namespace TWizard.Core.Loading
             return operation.Result;
         }
 
-        public override void LoadAsync<T>(ResultCallback<T> callback)
+        public override void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null)
         {
-            Addressables.LoadAssetAsync<T>(Key).Completed += (op) =>
+            var operation = Addressables.LoadAssetAsync<T>(Key);
+            progress?.Report(() => operation.PercentComplete);
+            operation.Completed += (op) =>
             {
                 if (op.OperationException != null)
                     callback.SetException(op.OperationException);

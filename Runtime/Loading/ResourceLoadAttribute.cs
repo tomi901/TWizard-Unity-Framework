@@ -17,9 +17,10 @@ namespace TWizard.Core.Loading
 
         public override T Load<T>() => Resources.Load<T>(Path);
 
-        public override void LoadAsync<T>(ResultCallback<T> callback)
+        public override void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null)
         {
             var request = Resources.LoadAsync<T>(Path);
+            progress?.Report(() => request.progress);
             request.completed += (_) =>
             {
                 T asset = (T)request.asset;

@@ -39,7 +39,7 @@ namespace TWizard.Core.Loading
         /// <typeparam name="T">The asset type.</typeparam>
         /// <param name="onLoaded">Callback when the resource is loaded.</param>
         /// <param name="onError">Callback when the loading gave an error.</param>
-        public virtual void LoadAsync<T>(ResultCallback<T> callback) where T : UnityEngine.Object
+        public virtual void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null) where T : UnityEngine.Object
         {
             try
             {
@@ -52,7 +52,7 @@ namespace TWizard.Core.Loading
         }
 
 #if UNITASK
-        public UniTask<T> LoadAsync<T>() where T : UnityEngine.Object
+        public UniTask<T> LoadAsync<T>(IProgress<Func<float>> progress = null) where T : UnityEngine.Object
         {
             var tcs = new UniTaskCompletionSource<T>();
             LoadAsync<T>((result) =>
@@ -61,7 +61,7 @@ namespace TWizard.Core.Loading
                     tcs.TrySetResult(result);
                 else
                     tcs.TrySetException(result.Exception);
-            });
+            }, progress);
             return tcs.Task;
         }
 #endif
