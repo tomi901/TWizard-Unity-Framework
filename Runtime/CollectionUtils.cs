@@ -6,18 +6,16 @@ namespace TWizard.Core
 {
     public static class CollectionUtils
     {
-        public static void Shuffle<T>(this T list, Random rng = null, int range = int.MaxValue) where T : IList
+        public static void Shuffle<T>(this T list, Random rng = null, int range = int.MaxValue) where T : IList<T>
         {
             if (rng == null)
                 rng = new Random();
 
-            int count = list.Count;
             range = Math.Min(range, list.Count);
-
             for (int n = 0; n < range; n++)
             {
-                int randomIndex = rng.Next(n, count);
-                object temp = list[n];
+                int randomIndex = rng.Next(n, range);
+                T temp = list[n];
                 list[n] = list[randomIndex];
                 list[randomIndex] = temp;
             }
