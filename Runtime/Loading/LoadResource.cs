@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 #endif
 
 
-namespace TWizard.Core.Loading
+namespace TWizard.Core
 {
     public static partial class Load
     {

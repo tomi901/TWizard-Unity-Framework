@@ -3,7 +3,7 @@ using System;
 using UnityEngine.AddressableAssets;
 
 
-namespace TWizard.Core.Loading
+namespace TWizard.Core
 {
     public class AddresableLoadAttribute : AssetLoadAttribute
     {

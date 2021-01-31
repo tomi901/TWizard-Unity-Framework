@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 #if UNITY_EDITOR
+using UnityEngine.UIElements;
 using UnityEditor;
+using UnityEditor.UIElements;
 #endif
 
 namespace TWizard.Core
@@ -8,12 +10,35 @@ namespace TWizard.Core
     /// <summary>
     /// Allows to show a string as a <see cref="SceneAsset"/> object.
     /// </summary>
-    public class SceneAttribute : PropertyAttribute { }
+    public class SceneAttribute : PropertyAttribute
+    {
+        public bool OnlyUseBuildScenes { get; set; } = true;
+    }
 
 #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(SceneAttribute))]
     public class SceneDrawer : PropertyDrawer
     {
+        protected SceneAttribute Attribute => (SceneAttribute)attribute;
+
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
+        {
+            if (property.propertyType != SerializedPropertyType.String)
+                return new Label("Use [Scene] with strings.");
+
+            var asset = GetSceneObject(property.stringValue);
+            var field = new ObjectField(property.displayName)
+            {
+                allowSceneObjects = false,
+                objectType = typeof(SceneAsset),
+                value = asset,
+            };
+            field.RegisterValueChangedCallback((e) =>
+            {
+                property.stringValue = e.newValue.name;
+            });
+            return field;
+        }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -41,6 +66,7 @@ namespace TWizard.Core
             }
             else EditorGUI.LabelField(position, label.text, "Use [Scene] with strings.");
         }
+
         protected SceneAsset GetSceneObject(string sceneObjectName)
         {
             if (string.IsNullOrEmpty(sceneObjectName))

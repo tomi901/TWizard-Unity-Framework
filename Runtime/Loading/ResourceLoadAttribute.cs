@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TWizard.Core.Loading
+namespace TWizard.Core
 {
     /// <summary>
     /// An attribute to tell to load an instance as a resource into a specified resource path defined by <see cref="Path"/>

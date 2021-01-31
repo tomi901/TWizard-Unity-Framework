@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 #endif
 
 
-namespace TWizard.Core.Loading
+namespace TWizard.Core
 {
     /// <summary>
     /// Util static class to allow the await of unity async operations.
