@@ -12,7 +12,7 @@ namespace TWizard.Core
     /// </summary>
     public class SceneAttribute : PropertyAttribute
     {
-        public bool OnlyUseBuildScenes { get; set; } = true;
+        // public bool OnlyUseBuildScenes { get; set; } = true;
     }
 
 #if UNITY_EDITOR
@@ -23,6 +23,7 @@ namespace TWizard.Core
 
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
+            Debug.Log("USING UIELEMENTS");
             if (property.propertyType != SerializedPropertyType.String)
                 return new Label("Use [Scene] with strings.");
 
@@ -32,10 +33,12 @@ namespace TWizard.Core
                 allowSceneObjects = false,
                 objectType = typeof(SceneAsset),
                 value = asset,
+                binding = null,
             };
             field.RegisterValueChangedCallback((e) =>
             {
-                property.stringValue = e.newValue.name;
+                var sceneName = !!e.newValue ? GetSceneObject(e.newValue.name) : null;
+                property.stringValue = !!sceneName ? sceneName.name : "";
             });
             return field;
         }
@@ -74,14 +77,10 @@ namespace TWizard.Core
 
             foreach (EditorBuildSettingsScene editorScene in EditorBuildSettings.scenes)
             {
-                if (editorScene.path.IndexOf(sceneObjectName) != -1)
-                {
+                if (editorScene.path.Contains(sceneObjectName))
                     return AssetDatabase.LoadAssetAtPath(editorScene.path, typeof(SceneAsset)) as SceneAsset;
-                }
             }
-            Debug.LogWarning($"Scene [{sceneObjectName}] cannot be used. " +
-                "Add this scene to the 'Scenes in the Build' in build settings.");
-
+            Debug.LogWarning($"Scene [{sceneObjectName}] cannot be used. Add this scene to the 'Scenes in the Build' in build settings.");
             return null;
         }
     }
