@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
-
+using System.Threading.Tasks;
 
 namespace TWizard.Core.Editor
 {
@@ -78,9 +78,18 @@ namespace TWizard.Core.Editor
             var instanceProperty = type.GetProperty("Instance", StaticFlags);
             instanceProperty.SetValue(null, null); // Set it to null to assert we are loading correctly
 
-            object loaded = type.GetMethod("Load", StaticFlags).Invoke(null, new object[0]);
-            if (loaded == null)
-                throw new Exception("Load returned null.");
+            TimeSpan timeout = TimeSpan.FromSeconds(5f);
+            bool succeded = Task.Run(() =>
+            {
+                object loaded = type.GetMethod("Load", StaticFlags).Invoke(null, new object[0]);
+                if (loaded == null)
+                    throw new Exception("Load returned null.");
+
+                return loaded;
+            }).Wait(timeout);
+
+            if (!succeded)
+                throw new Exception($"Load timeout after {timeout.Milliseconds} miliseconds.");
         }
     }
 }
