@@ -23,7 +23,7 @@ namespace TWizard.Core
 
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            Debug.Log("USING UIELEMENTS");
+            // Debug.Log("USING UIELEMENTS");
             if (property.propertyType != SerializedPropertyType.String)
                 return new Label("Use [Scene] with strings.");
 
@@ -45,6 +45,7 @@ namespace TWizard.Core
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            // Debug.Log("USING IMGUI");
             if (property.propertyType == SerializedPropertyType.String)
             {
                 SceneAsset sceneObject = GetSceneObject(property.stringValue);
