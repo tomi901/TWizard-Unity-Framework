@@ -14,9 +14,7 @@ namespace TWizard.Core
 
         public override T Load<T>()
         {
-            var operation = Addressables.LoadAssetAsync<T>(Key);
-            operation.Task.Wait();
-            return operation.Result;
+            throw new NotSupportedException("Must load asset using LoadAsync method first.");
         }
 
         public override void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null)

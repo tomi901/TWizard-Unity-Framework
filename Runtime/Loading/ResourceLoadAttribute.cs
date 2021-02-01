@@ -11,8 +11,9 @@ namespace TWizard.Core
         public string Path { get; }
 
 
-        public ResourceLoadAttribute()
+        public ResourceLoadAttribute(string path)
         {
+            Path = path;
         }
 
         public override T Load<T>() => Resources.Load<T>(Path);
