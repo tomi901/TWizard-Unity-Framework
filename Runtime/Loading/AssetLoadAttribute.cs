@@ -19,8 +19,15 @@ namespace TWizard.Core
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public abstract class AssetLoadAttribute : Attribute
     {
+        public bool IgnoredByChecker { get; set; }
+
         public AssetLoadAttribute()
         {
+        }
+
+        public AssetLoadAttribute(bool ignoredByChecker)
+        {
+            IgnoredByChecker = ignoredByChecker;
         }
 
 

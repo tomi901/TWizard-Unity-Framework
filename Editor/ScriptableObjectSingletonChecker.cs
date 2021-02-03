@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
-using System.Threading.Tasks;
 
 namespace TWizard.Core.Editor
 {
@@ -13,13 +12,23 @@ namespace TWizard.Core.Editor
         private const BindingFlags StaticFlags = BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
 
 
-        [InitializeOnLoadMethod]
         [MenuItem("Tools/TWizard/Check Scriptable Object Singletons")]
         public static void Check()
         {
             // Debug.Log($"Currently found ScriptableObjectSingletons:\n{string.Join("\n *", GetInheritedTypes())}");
             foreach (Type type in GetInheritedTypes())
             {
+                try
+                {
+                    if (ShouldIgnore(type))
+                        continue;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    continue;
+                }
+
                 if (!HasAssetLoadAttribute(type))
                     Debug.LogError($"ScriptableObjectSingleton \"{type}\" has no [{nameof(AssetLoadAttribute)}] attribute.");
 
@@ -78,18 +87,18 @@ namespace TWizard.Core.Editor
             var instanceProperty = type.GetProperty("Instance", StaticFlags);
             instanceProperty.SetValue(null, null); // Set it to null to assert we are loading correctly
 
-            TimeSpan timeout = TimeSpan.FromSeconds(5f);
-            bool succeded = Task.Run(() =>
-            {
-                object loaded = type.GetMethod("Load", StaticFlags).Invoke(null, new object[0]);
-                if (loaded == null)
-                    throw new Exception("Load returned null.");
+            object loaded = type.GetMethod("Load", StaticFlags).Invoke(null, new object[0]);
+            if (loaded == null)
+                throw new Exception("Load returned null.");
+        }
 
-                return loaded;
-            }).Wait(timeout);
+        public static bool ShouldIgnore(Type type)
+        {
+            var loadAttribute = type.GetLoader();
+            if (loadAttribute == null)
+                throw new Exception($"ScriptableObjectSingleton \"{type}\" has no [{nameof(AssetLoadAttribute)}] attribute.");
 
-            if (!succeded)
-                throw new Exception($"Load timeout after {timeout.Milliseconds} miliseconds.");
+            return loadAttribute.IgnoredByChecker;
         }
     }
 }
