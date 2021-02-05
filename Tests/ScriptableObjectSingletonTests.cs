@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Threading.Tasks;
 using NUnit.Framework;
+using TWizard.Core.Async;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -20,15 +22,11 @@ namespace TWizard.Core.Tests
         [UnityTest]
         public IEnumerator LoadAsynchronously()
         {
-            SingletonTest loaded = null;
-            SingletonTest.LoadAsync(callback: (result) => {
-                if (result.IsSuccesful)
-                    loaded = result;
-                else
-                    Debug.LogException(result.Exception);
-            });
-            yield return new WaitUntil(() => !!loaded);
+            var listener = new ResultListener<SingletonTest>();
+            SingletonTest.LoadAsync(listener.Callback);
+            yield return listener;
 
+            SingletonTest loaded = listener.Value;
             Assert.That(loaded, Is.Not.Null);
             Assert.That(loaded, Is.EqualTo(SingletonTest.Instance));
             Assert.That(SingletonTest.IsLoaded);
@@ -44,6 +42,12 @@ namespace TWizard.Core.Tests
                 return ScriptableObject.CreateInstance(typeof(T)) as T;
             else
                 return Activator.CreateInstance<T>();
+        }
+
+        public override async void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null)
+        {
+            await Task.Delay(500);
+            callback.SetResult(Load<T>());
         }
     }
 

@@ -12,11 +12,6 @@ namespace TWizard.Core
         public AddresableLoadAttribute(string key) => Key = key;
 
 
-        public override T Load<T>()
-        {
-            throw new NotSupportedException("Must load asset using LoadAsync method first.");
-        }
-
         public override void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null)
         {
             var operation = Addressables.LoadAssetAsync<T>(Key);

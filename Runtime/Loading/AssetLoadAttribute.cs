@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using System.Threading.Tasks;
 #if UNITASK
 using Cysharp.Threading.Tasks;
 #endif
@@ -36,7 +37,10 @@ namespace TWizard.Core
         /// </summary>
         /// <typeparam name="T">The asset type.</typeparam>
         /// <returns>The loaded asset.</returns>
-        public abstract T Load<T>() where T : UnityEngine.Object;
+        public virtual T Load<T>() where T : UnityEngine.Object
+        {
+            throw new NotImplementedException("Synchronous Load not implemented, use LoadAsync instead!");
+        }
 
         /// <summary>
         /// Loads asynchronously the asset in a generic way to work with loaders like <see cref="Resources.LoadAsync(string)"/>
@@ -46,17 +50,7 @@ namespace TWizard.Core
         /// <typeparam name="T">The asset type.</typeparam>
         /// <param name="onLoaded">Callback when the resource is loaded.</param>
         /// <param name="onError">Callback when the loading gave an error.</param>
-        public virtual void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null) where T : UnityEngine.Object
-        {
-            try
-            {
-                callback.SetResult(Load<T>());
-            }
-            catch (Exception e)
-            {
-                callback.SetException(e);
-            }
-        }
+        public abstract void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null) where T : UnityEngine.Object;
 
 #if UNITASK
         public UniTask<T> LoadAsync<T>(IProgress<Func<float>> progress = null) where T : UnityEngine.Object

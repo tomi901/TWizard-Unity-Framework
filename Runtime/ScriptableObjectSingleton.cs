@@ -82,7 +82,7 @@ namespace TWizard.Core
         }
 
 #if UNITASK
-        public static UniTask<T> LoadAsync(IProgress<Func<float>> progress = null)
+        public static UniTask<T> LoadUniAsync(IProgress<Func<float>> progress = null)
         {
             if (IsLoaded)
                 return UniTask.FromResult(instance);
