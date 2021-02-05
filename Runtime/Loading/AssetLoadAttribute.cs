@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
-using System.Threading.Tasks;
 #if UNITASK
 using Cysharp.Threading.Tasks;
 #endif
+using TWizard.Core.Async;
 
 
 namespace TWizard.Core
