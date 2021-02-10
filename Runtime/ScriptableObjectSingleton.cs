@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Threading.Tasks;
 #if UNITASK
 using Cysharp.Threading.Tasks;
 #endif
@@ -60,7 +61,7 @@ namespace TWizard.Core
             return loader;
         }
 
-        public static T Load()
+        public static void Load()
         {
             if (IsLoaded)
                 throw new InvalidOperationException($"Already loaded instance of \"{nameof(T)}\".");
@@ -68,40 +69,16 @@ namespace TWizard.Core
             var loader = GetLoader();
             // Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
             instance = loader.Load<T>();
-            return instance;
         }
 
-        public static void LoadAsync(ResultCallback<T> callback = null, IProgress<Func<float>> progress = null)
+        public static async Task LoadAsync(IProgress<Func<float>> progress = null)
         {
             if (IsLoaded)
                 throw new InvalidOperationException($"Already loaded instance of \"{nameof(T)}\".");
 
             var loader = GetLoader();
             // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
-            loader.LoadAsync<T>((result) =>
-            {
-                if (result.IsSuccesful)
-                {
-                    instance = result.Value;
-                    callback?.SetResult(instance);
-                }
-                else
-                {
-                    callback?.SetException(result.Exception);
-                }
-            }, progress);
+            instance = await loader.LoadAsync<T>(progress);
         }
-
-#if UNITASK
-        public static UniTask<T> LoadUniAsync(IProgress<Func<float>> progress = null)
-        {
-            if (IsLoaded)
-                return UniTask.FromResult(instance);
-
-            var loader = GetLoader();
-            // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
-            return loader.LoadAsync<T>(progress);
-        }
-#endif
     }
 }

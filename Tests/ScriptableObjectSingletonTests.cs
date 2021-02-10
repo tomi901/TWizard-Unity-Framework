@@ -13,22 +13,20 @@ namespace TWizard.Core.Tests
         [Test]
         public void LoadSynchronously()
         {
-            var loaded = SingletonTest.Load();
+            SingletonTest.Load();
+            SingletonTest loaded = SingletonTest.Instance;
             Assert.That(loaded, Is.Not.Null);
-            Assert.That(loaded, Is.EqualTo(SingletonTest.Instance));
             Assert.That(SingletonTest.IsLoaded);
         }
 
         [UnityTest]
         public IEnumerator LoadAsynchronously()
         {
-            var listener = new ResultListener<SingletonTest>();
-            SingletonTest.LoadAsync(listener.Callback);
-            yield return listener;
+            var task = SingletonTest.LoadAsync();
+            yield return task.AsYieldable();
 
-            SingletonTest loaded = listener.Value;
+            SingletonTest loaded = SingletonTest.Instance;
             Assert.That(loaded, Is.Not.Null);
-            Assert.That(loaded, Is.EqualTo(SingletonTest.Instance));
             Assert.That(SingletonTest.IsLoaded);
         }
     }
@@ -36,6 +34,8 @@ namespace TWizard.Core.Tests
 
     public class TestLoadAttribute : AssetLoadAttribute
     {
+        public int AsyncDelayMiliseconds { get; set; } = 100;
+
         public override T Load<T>()
         {
             if (typeof(T).IsSubclassOf(typeof(ScriptableObject)))
@@ -44,10 +44,10 @@ namespace TWizard.Core.Tests
                 return Activator.CreateInstance<T>();
         }
 
-        public override async void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null)
+        public override async Task<T> LoadAsync<T>(IProgress<Func<float>> progress = null)
         {
-            await Task.Delay(500);
-            callback.SetResult(Load<T>());
+            await Task.Delay(AsyncDelayMiliseconds);
+            return Load<T>();
         }
     }
 

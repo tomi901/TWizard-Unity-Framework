@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using System.Threading.Tasks;
 #if UNITASK
 using Cysharp.Threading.Tasks;
 #endif
@@ -50,21 +51,6 @@ namespace TWizard.Core
         /// <typeparam name="T">The asset type.</typeparam>
         /// <param name="onLoaded">Callback when the resource is loaded.</param>
         /// <param name="onError">Callback when the loading gave an error.</param>
-        public abstract void LoadAsync<T>(ResultCallback<T> callback, IProgress<Func<float>> progress = null) where T : UnityEngine.Object;
-
-#if UNITASK
-        public UniTask<T> LoadAsync<T>(IProgress<Func<float>> progress = null) where T : UnityEngine.Object
-        {
-            var tcs = new UniTaskCompletionSource<T>();
-            LoadAsync<T>((result) =>
-            {
-                if (result.IsSuccesful)
-                    tcs.TrySetResult(result);
-                else
-                    tcs.TrySetException(result.Exception);
-            }, progress);
-            return tcs.Task;
-        }
-#endif
+        public abstract Task<T> LoadAsync<T>(IProgress<Func<float>> progress = null) where T : UnityEngine.Object;
     }
 }
