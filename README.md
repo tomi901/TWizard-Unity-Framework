@@ -7,7 +7,7 @@ General framework I use for my Unity projects.
 ### ScriptableObjectSingleton
 
 A singleton for *ScriptableObjects*, useful for custom project settings editable in the inspector.
-Must be used with a *AssetLoadAttribute* to handle the loading.
+Must be used with a *AssetLoadAttribute* to handle the loading. See "AssetLoadAttribute" section for more details.
 
 ```C#
 // Loads this singleton from a resource located in Resources/Game Configuration
@@ -18,17 +18,29 @@ public class GameConfiguration : ScriptableObjectSingleton<GameConfiguration>
 ...
 ```
 
+### AssetLoadAttribute
+
+An attribute to place to a certain class and define how we should load an Asset of that class, its abstract so you should use the inheriting classes:
+
+* `[ResourceLoad(string path)]`: Loads the asset at that resources path. Must be place inside a **Resources** folder.
+* `[AddressableLoad(string key)]`: When including the Unity Addressables package, must set an asset with the addresable key.
+
 ### SceneAttribute
 
 A fancy way to show a string as a *SceneAsset* and avoid hardcoded strings. Useful for storing the scenes in
 *ScriptableObjectSingleton*
 
+```C#
+...
+// Will be show on the inspector as a SceneAsset
+[SerializeField, Scene]
+private string sceneName;
+...
+```
 
 ### Load.Scene
 
-Loads a scene asynchronously as a *Task<Scene>* returning the loaded *Scene*, allowing extra post-load tasks.
-  
-*WIP: Progress reporting*
+Loads a scene asynchronously with a *ResultCallback<Scene>* or a *UniTask<Scene>* returning the loaded *Scene*.
 
 ## Installing
 
