@@ -20,12 +20,13 @@ namespace TWizard.Core.Async
             if (asyncFunction == null)
                 throw new ArgumentNullException(nameof(asyncFunction));
 
-            var task = asyncFunction();
-            while (task.ShouldKeepWaiting())
+            var awaiter = asyncFunction().GetAwaiter();
+            while (!awaiter.IsCompleted)
+            {
+                // Debug.Log("Waiting...");
                 yield return null;
-
-            if (task.Exception != null)
-                throw task.Exception;
+            }
+            awaiter.GetResult();
         }
     }
 

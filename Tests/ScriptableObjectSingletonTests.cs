@@ -10,6 +10,13 @@ namespace TWizard.Core.Tests
 {
     public class ScriptableObjectSingletonTests
     {
+        [SetUp]
+        public void Unload()
+        {
+            SingletonTest.Unload();
+            Assert.That(SingletonTest.IsLoaded, Is.False);
+        }
+
         [Test]
         public void LoadSynchronously()
         {
@@ -20,15 +27,13 @@ namespace TWizard.Core.Tests
         }
 
         [UnityTest]
-        public IEnumerator LoadAsynchronously()
+        public IEnumerator LoadAsynchronously() => Yield.Async(async () =>
         {
-            var task = SingletonTest.LoadAsync();
-            yield return task.AsYieldable();
-
+            await SingletonTest.LoadAsync();
             SingletonTest loaded = SingletonTest.Instance;
             Assert.That(loaded, Is.Not.Null);
             Assert.That(SingletonTest.IsLoaded);
-        }
+        });
     }
 
 
@@ -54,5 +59,6 @@ namespace TWizard.Core.Tests
     [TestLoad]
     public class SingletonTest : ScriptableObjectSingleton<SingletonTest>
     {
+        public static void Unload() => Instance = null;
     }
 }
