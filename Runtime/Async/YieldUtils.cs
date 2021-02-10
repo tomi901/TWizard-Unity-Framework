@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -12,6 +13,20 @@ namespace TWizard.Core.Async
 
         public static YieldableTask AsYieldable(this Task task) => new YieldableTask(task);
         public static YieldableTask<T> AsYieldable<T>(this Task<T> task) => new YieldableTask<T>(task);
+
+
+        public static IEnumerator Async(Func<Task> asyncFunction)
+        {
+            if (asyncFunction == null)
+                throw new ArgumentNullException(nameof(asyncFunction));
+
+            var task = asyncFunction();
+            while (task.ShouldKeepWaiting())
+                yield return null;
+
+            if (task.Exception != null)
+                throw task.Exception;
+        }
     }
 
     public class YieldableTask : CustomYieldInstruction
