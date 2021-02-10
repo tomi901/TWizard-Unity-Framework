@@ -27,7 +27,22 @@ namespace TWizard.Core
         /// </summary>
         public static T Instance
         {
-            get => Load();
+            get
+            {
+                if (!IsLoaded)
+                {
+                    try
+                    {
+                        Load();
+                    }
+                    catch (NotImplementedException e)
+                    {
+                        throw new NotSupportedException($"Instance of type \"{nameof(T)}\" is not loaded and can't be loadded synchronously, " +
+                            $"load it with LoadAsync first.", e);
+                    }
+                }
+                return instance;
+            }
             protected set => instance = value;
         }
         /// <summary>
@@ -47,23 +62,19 @@ namespace TWizard.Core
 
         public static T Load()
         {
-            if (!IsLoaded)
-            {
-                var loader = GetLoader();
-                // Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
-                instance = loader.Load<T>();
-            }
+            if (IsLoaded)
+                throw new InvalidOperationException($"Already loaded instance of \"{nameof(T)}\".");
+
+            var loader = GetLoader();
+            // Debug.Log($"Loading synchronously singleton of type '{nameof(T)}'...");
+            instance = loader.Load<T>();
             return instance;
         }
 
         public static void LoadAsync(ResultCallback<T> callback = null, IProgress<Func<float>> progress = null)
         {
-            // Already has an instance, return and call onLoaded
             if (IsLoaded)
-            {
-                callback?.SetResult(instance);
-                return;
-            }
+                throw new InvalidOperationException($"Already loaded instance of \"{nameof(T)}\".");
 
             var loader = GetLoader();
             // Debug.Log($"Loading asynchronously singleton of type '{nameof(T)}'...");
