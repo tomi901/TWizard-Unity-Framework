@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 
 using Object = UnityEngine.Object;
@@ -16,9 +17,11 @@ namespace TWizard.Core
         /// <param name="action">The action to invoke.</param>
         /// <param name="time">How much time to wait.</param>
         /// <returns>Cancellable <see cref="Coroutine"/>.</returns>
-        public static Coroutine Invoke(this MonoBehaviour monoBehaviour, Action action, float time)
+        public static Coroutine Invoke(this MonoBehaviour monoBehaviour, Action action, float time, CancellationToken cancellationToken = default)
         {
-            return monoBehaviour.StartCoroutine(Routine());
+            var coroutine = monoBehaviour.StartCoroutine(Routine());
+            cancellationToken.Register(() => monoBehaviour.StopCoroutine(coroutine), true);
+            return coroutine;
 
             IEnumerator Routine()
             {
@@ -38,9 +41,11 @@ namespace TWizard.Core
         /// <param name="repeatTime"></param>
         /// <returns>Cancellable <see cref="Coroutine"/>.</returns>
         public static Coroutine InvokeRepeating(this MonoBehaviour monoBehaviour, Action action, float time, 
-            float repeatTime)
+            float repeatTime, CancellationToken cancellationToken = default)
         {
-            return monoBehaviour.StartCoroutine(Routine());
+            var coroutine = monoBehaviour.StartCoroutine(Routine());
+            cancellationToken.Register(() => monoBehaviour.StopCoroutine(coroutine), true);
+            return coroutine;
 
             IEnumerator Routine()
             {
