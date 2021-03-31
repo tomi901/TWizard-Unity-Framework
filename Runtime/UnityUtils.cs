@@ -33,7 +33,7 @@ namespace TWizard.Core
         }
 
         /// <summary>
-        /// Replaces <see cref="MonoBehaviour.Invoke(string, float)"/> and avoid calling a method by its name.
+        /// Replaces <see cref="MonoBehaviour.InvokeRepeating(string, float, float)"/> and avoid calling a method by its name.
         /// </summary>
         /// <param name="monoBehaviour">The MonoBehaviour that will own the coroutine.</param>
         /// <param name="action">The action to invoke.</param>
