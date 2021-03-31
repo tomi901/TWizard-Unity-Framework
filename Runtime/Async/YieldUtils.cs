@@ -8,9 +8,6 @@ namespace TWizard.Core.Async
 {
     public static class Yield
     {
-        public static bool ShouldKeepWaiting(this Task task) => !task.IsCompleted || !task.IsFaulted || !task.IsCanceled;
-
-
         public static YieldableTask AsYieldable(this Task task) => new YieldableTask(task);
         public static YieldableTask<T> AsYieldable<T>(this Task<T> task) => new YieldableTask<T>(task);
 
@@ -33,22 +30,55 @@ namespace TWizard.Core.Async
     public class YieldableTask : CustomYieldInstruction
     {
         public Task Task { get; }
+        public System.Runtime.CompilerServices.TaskAwaiter Awaiter { get; }
 
-        public override bool keepWaiting => Task.ShouldKeepWaiting();
+        public override bool keepWaiting
+        {
+            get
+            {
+                if (Awaiter.IsCompleted)
+                {
+                    Awaiter.GetResult();
+                    return false;
+                }
+                else return true;
+            }
+        }
 
 
-        public YieldableTask(Task task) => Task = task ?? throw new ArgumentNullException(nameof(task));
+        public YieldableTask(Task task)
+        {
+            Task = task ?? throw new ArgumentNullException(nameof(task));
+            Awaiter = Task.GetAwaiter();
+        }
     }
 
     public class YieldableTask<T> : CustomYieldInstruction
     {
         public Task<T> Task { get; }
+        public System.Runtime.CompilerServices.TaskAwaiter<T> Awaiter { get; }
+
         public T Result => Task.Result;
 
-        public override bool keepWaiting => Task.ShouldKeepWaiting();
+        public override bool keepWaiting
+        {
+            get
+            {
+                if (Awaiter.IsCompleted)
+                {
+                    Awaiter.GetResult();
+                    return false;
+                }
+                else return true;
+            }
+        }
 
 
-        public YieldableTask(Task<T> task) => Task = task ?? throw new ArgumentNullException(nameof(task));
+        public YieldableTask(Task<T> task)
+        {
+            Task = task ?? throw new ArgumentNullException(nameof(task));
+            Awaiter = Task.GetAwaiter();
+        }
     }
 
     /// <summary>
